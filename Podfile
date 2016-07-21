@@ -6,6 +6,6 @@ target 'faBR' do
   use_frameworks!
 
   # Pods for faBR
-  
+  pod 'MBProgressHUD', '~> 1.0.0'
 
 end

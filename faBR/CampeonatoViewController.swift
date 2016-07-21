@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MBProgressHUD
 
 struct Rodada {
     let rodada:Int
@@ -36,6 +37,18 @@ class CampeonatoViewController: UIViewController {
         loadRodadaPage()
     }
     
+    func showLoadingHUD() {
+        let hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        hud.label.text = "Carregando..."
+    }
+    
+    func hideLoadingHUD() {
+        
+        dispatch_async(dispatch_get_main_queue()) {
+            MBProgressHUD.hideHUDForView(self.view, animated: true)
+        }
+        
+    }
     
     func loadRodadaPage(){
         
@@ -46,6 +59,7 @@ class CampeonatoViewController: UIViewController {
         let formater = NSDateFormatter()
         formater.dateFormat = "yyyy-MM-dd HH:mm:ss"
         
+        self.showLoadingHUD()
         
         dispatch_async(dispatch_queue_create("loadJSON", nil)) {
             
@@ -118,6 +132,7 @@ class CampeonatoViewController: UIViewController {
                     dispatch_async(dispatch_get_main_queue(), {
                         
                         self.tableView.reloadData()
+                        self.hideLoadingHUD()
                     })
                     
                 }catch{
@@ -203,8 +218,8 @@ extension CampeonatoViewController:UITableViewDataSource, UITableViewDelegate{
                 NSData(contentsOfURL:
                     NSURL(string: pathMandante)!)!)
             
+
             dispatch_async(dispatch_get_main_queue(), {
-                
                 
                 cell.imageMandante.image = imageMandante
             })
@@ -213,23 +228,21 @@ extension CampeonatoViewController:UITableViewDataSource, UITableViewDelegate{
         
         
         
-        //dispatch_async(dispatch_queue_create("loadVisitante", nil)) {
+        dispatch_async(dispatch_queue_create("loadVisitante", nil)) {
         
-        let pathVisitante = "\(self.urlPath)\(rodada.imagemVisitante)"
+            let pathVisitante = "\(self.urlPath)\(rodada.imagemVisitante)"
         
-        let imageVisitante = UIImage(data:
-            NSData(contentsOfURL:
-                NSURL(string: pathVisitante)!)!)
+            let imageVisitante = UIImage(data:
+                NSData(contentsOfURL:
+                    NSURL(string: pathVisitante)!)!)
         
-        dispatch_async(dispatch_get_main_queue(), {
+            dispatch_async(dispatch_get_main_queue(), {
             
-            cell.imageVisitante.image = imageVisitante
+                cell.imageVisitante.image = imageVisitante
             
-        })
+            })
         
-        
-        
-        // }
+        }
         
         
         return cell
